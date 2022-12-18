@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33103.184
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinqTasks", "LinqTasks\LinqTasks.csproj", "{DF46AA2F-68B7-4B74-A278-A0E1CC799FE1}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{7E11EB85-5AA5-4D6E-AC96-1E85D38CF625}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DF46AA2F-68B7-4B74-A278-A0E1CC799FE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF46AA2F-68B7-4B74-A278-A0E1CC799FE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF46AA2F-68B7-4B74-A278-A0E1CC799FE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF46AA2F-68B7-4B74-A278-A0E1CC799FE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E11EB85-5AA5-4D6E-AC96-1E85D38CF625}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E11EB85-5AA5-4D6E-AC96-1E85D38CF625}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E11EB85-5AA5-4D6E-AC96-1E85D38CF625}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E11EB85-5AA5-4D6E-AC96-1E85D38CF625}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5990A31C-4E93-438A-8119-6DBAF0540DEA}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,25 @@
+version: '3.4'
+
+services:
+  linqtasksdb:
+    container_name: app-db
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - 1433:1433
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=password@12345#
+  linqtasks:
+    container_name: linq-tasks
+    image: ${DOCKER_REGISTRY-}linqtasks
+    build:
+      context: .
+      dockerfile: LinqTasks/Dockerfile
+    ports:
+      - 8001:80
+    depends_on:
+      - linqtasksdb
+    environment:
+      - DB_HOST=linqtasksdb
+      - DB_NAME=linqtasksapp
+      - DB_SA_PASSWORD=password@12345#

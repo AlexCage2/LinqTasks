@@ -1,0 +1,104 @@
+﻿@using System.Text.RegularExpressions;
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model IndexViewModel
+
+<!-- Заголовок -->
+<div class="text-center">
+    <h2 class="display-5">Все задачи необходимо решить в одну строку</h2>  
+    <br />
+</div>
+
+<!-- Сами вкладки -->
+<ul class="nav nav-tabs">
+    <!-- Первая вкладка (активная) -->
+    <li class="nav-item">
+        <a class="nav-link active" data-toggle="tab" href="#level1">Уровень 1</a>
+    </li>
+    <!-- Вторая вкладка -->
+    <li class="nav-item">
+        <a class="nav-link " data-toggle="tab" href="#level2">Уровень 2</a>
+    </li>
+</ul>
+
+<!-- Блоки с контентом -->
+<div class="tab-content">
+    <!-- Первый блок (он отображается по умолчанию, т.к. имеет классы show и active) -->
+    <div class="tab-pane fade show active" id="level1">
+        <br />
+        <a class="btn btn-outline-primary" asp-controller="Home" asp-action="Create" asp-route-diff=1>Добавить задачу</a>
+        <br />
+        @foreach (var item in Model
+            .ProgrammingTasksLevel
+            .Where(task => task.DifficultyId == 1)
+            .Select((value, index) => new 
+            { 
+                Index = index + 1, 
+                Value = value 
+            }))
+        {
+            <br />
+            <div class="card card-body">
+                <h6>@item.Index. @item.Value.Description</h6>
+                <div class="card card-body">
+                    <pre>@item.Value.Code</pre>
+                </div>
+                <br /> 
+                <p>Output</p>
+                <div class="card card-body">
+                    <code>@item.Value.Result</code> 
+                </div>
+                <br />
+                <div class="d-flex">
+                    <div class="d-inline">
+                        <a class="btn btn-outline-dark" asp-controller="Home" asp-action="Edit" asp-route-id="@item.Value.Id">Изменить</a>
+                    </div>
+                    <div class="d-inline ml-2">
+                        <form asp-controller="Home" asp-action="Delete" method="post" asp-route-id="@item.Value.Id">
+                            <input class="btn btn-outline-dark" type="submit" value="Удалить" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Второй блок -->
+    <div class="tab-pane fade" id="level2">
+        <br />
+        <a type="button" class="btn btn-outline-primary" asp-area="" asp-controller="Home" asp-action="Create" asp-route-diff=2>Добавить задачу</a>
+        <br />
+        @foreach (var item in Model
+            .ProgrammingTasksLevel
+            .Where(task => task.DifficultyId == 2)
+            .Select((value, index) => new
+            {
+               Index = index + 1,
+               Value = value
+            }))
+        {
+            <br />
+            <div class="card card-body">
+                <h6>@item.Index. @item.Value.Description</h6>
+                <div class="card card-body">
+                    <pre>@item.Value.Code</pre>
+                </div>
+                <br />
+                <div class="d-flex">
+                    <div class="d-inline">
+                        <a class="btn btn-outline-dark" asp-controller="Home" asp-action="Edit" asp-route-id="@item.Value.Id">Изменить</a>
+                    </div>
+                    <div class="d-inline ml-2">
+                        <form asp-controller="Home" asp-action="Delete" method="post" asp-route-id="@item.Value.Id">
+                            <input class="btn btn-outline-dark" type="submit" value="Удалить" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+        <br />
+    </div>
+</div>
+
