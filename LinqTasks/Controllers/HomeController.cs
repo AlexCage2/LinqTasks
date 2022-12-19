@@ -20,31 +20,31 @@ namespace LinqTasks.Controllers
             _dbContext = context;
         }
 
-        /* GET: Tasks */
+        /* GET: ProgrammingTasks */
         [HttpGet("")]
         public async Task<IActionResult> Index()
         {
-            IQueryable<ProgrammingTask> programmingTasksLevel1 = _dbContext
+            IQueryable<ProgrammingTask> programmingTasks = _dbContext
                 .ProgrammingTasks
                 .Include(task => task.Difficulty)
                 .AsNoTracking();
 
             IndexViewModel indexViewModel = new IndexViewModel
             {
-                ProgrammingTasksLevel = await programmingTasksLevel1.ToListAsync()
+                ProgrammingTasksLevel = await programmingTasks.ToListAsync()
             };
 
             return View(indexViewModel);
         }
 
-        /* GET: Create Task */
+        /* GET: Create ProgrammingTask */
         [HttpGet("{action}")]
         public async Task<IActionResult> Create(int? difficultyId)
         {
             return await GetCreateViewAsync(difficultyId);
         }
 
-        /* POST: Create Task */
+        /* POST: Create ProgrammingTask */
         [HttpPost("{action}")]
         public async Task<IActionResult> Create(ProgrammingTask programmingTask)
         {
@@ -63,14 +63,14 @@ namespace LinqTasks.Controllers
             return RedirectToAction("Index");
         }
 
-        /* GET: Edit Task */
+        /* GET: Edit ProgrammingTask */
         [HttpGet("{action}")]
         public async Task<IActionResult> Edit(int? id)
         {
             return await GetEditViewAsync(id);
         }
 
-        /* POST: Edit Task */
+        /* POST: Edit ProgrammingTask */
         [HttpPost("{action}")]
         public async Task<IActionResult> Edit(ProgrammingTask programmingTask)
         {
@@ -89,7 +89,7 @@ namespace LinqTasks.Controllers
             return RedirectToAction("Index");
         }
 
-        /* POST: Delete Task */
+        /* POST: Delete ProgrammingTask */
         [HttpPost("{action}")]
         public async Task<IActionResult> Delete(int? id)
         {
