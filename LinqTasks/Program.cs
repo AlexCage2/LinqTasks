@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 {
+    /* Servives */
     /* Database Context Dependecy Injection */
     string dbHost = Environment.GetEnvironmentVariable("DB_HOST");
     string dbName = Environment.GetEnvironmentVariable("DB_NAME");
@@ -15,7 +16,18 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddControllersWithViews();
 }
 
+
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    var context = services.GetRequiredService<DataContext>();
+    context.Database.EnsureCreated();
+    DbInitializer.Initialize(context);
+}
+
 {
     /* Middlewares */
     app.UseHttpsRedirection();

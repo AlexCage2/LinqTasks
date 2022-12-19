@@ -18,7 +18,6 @@ namespace LinqTasks.Controllers
         {
             _logger = logger;
             _dbContext = context;
-            DbInitializer.Initialize(context);
         }
 
         /* GET: Tasks */
