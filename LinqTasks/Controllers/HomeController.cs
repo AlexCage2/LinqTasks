@@ -45,11 +45,11 @@ namespace LinqTasks.Controllers
         [HttpPost("{action}")]
         public async Task<IActionResult> Create(ProgrammingTask programmingTask)
         {
+            // Validation
             if (programmingTask.DifficultyId == 1 && programmingTask.Result.IsNullOrEmpty())
             {
                 ModelState.AddModelError("Result", "Для задач уровня 1 необходимо добавить результат вывода");
             }
-
             if (!ModelState.IsValid)
             {
                 await PopulateDropDownListsAsync(programmingTask.DifficultyId);
@@ -90,11 +90,11 @@ namespace LinqTasks.Controllers
         [HttpPost("{action}")]
         public async Task<IActionResult> Edit(ProgrammingTask programmingTask)
         {
+            // Validation
             if (programmingTask.DifficultyId == 1 && programmingTask.Result == null)
             {
                 ModelState.AddModelError("Result", "Для задач уровня 1 необходимо добавить результат вывода");
             }
-
             if (!ModelState.IsValid)
             {
                 await PopulateDropDownListsAsync(programmingTask.DifficultyId);
@@ -130,7 +130,6 @@ namespace LinqTasks.Controllers
         }
 
         /* Private Methods: */
-        /* PopulateSelectListsToCreateViewAsync() */
         private async Task PopulateDropDownListsAsync(int? selectedDifficultyId)
         {
             IQueryable<Language> languages = _dbContext.Languages
