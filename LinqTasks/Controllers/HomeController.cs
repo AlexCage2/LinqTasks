@@ -4,6 +4,7 @@ using LinqTasks.Models.Home.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace LinqTasks.Controllers
 {
@@ -41,33 +42,53 @@ namespace LinqTasks.Controllers
         [HttpGet("{action}")]
         public async Task<IActionResult> Create(int? difficultyId)
         {
-            return await GetCreateViewAsync(difficultyId);
+            await PopulateDropDownListsAsync(difficultyId);
+            return View(nameof(Create));
         }
 
         /* POST: Create ProgrammingTask */
         [HttpPost("{action}")]
         public async Task<IActionResult> Create(ProgrammingTask programmingTask)
         {
-            if (programmingTask.DifficultyId == 1 && programmingTask.Result == null)
+            if (programmingTask.DifficultyId == 1 && programmingTask.Result.IsNullOrEmpty())
             {
                 ModelState.AddModelError("Result", "Для задач уровня 1 необходимо добавить результат вывода");
             }
 
             if (!ModelState.IsValid)
             {
-                return await GetCreateViewAsync(programmingTask.DifficultyId, true);
+                await PopulateDropDownListsAsync(programmingTask.DifficultyId);
+                ViewData["isFailedToValid"] = true;
+                return View(nameof(Create));
             }
 
             _dbContext.Add(programmingTask);
             await _dbContext.SaveChangesAsync();
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 
         /* GET: Edit ProgrammingTask */
         [HttpGet("{action}")]
         public async Task<IActionResult> Edit(int? id)
         {
-            return await GetEditViewAsync(id);
+            if (id is null)
+            {
+                return NotFound();
+            }
+
+            ProgrammingTask? programmingTask = await _dbContext
+                .ProgrammingTasks
+                .AsNoTracking()
+                .FirstOrDefaultAsync(task =>
+                    task.Id == id);
+
+            if (programmingTask is null)
+            {
+                return NotFound();
+            }
+
+            await PopulateDropDownListsAsync(programmingTask.DifficultyId);
+            return View(programmingTask);
         }
 
         /* POST: Edit ProgrammingTask */
@@ -81,7 +102,9 @@ namespace LinqTasks.Controllers
 
             if (!ModelState.IsValid)
             {
-                return await GetEditViewAsync(programmingTask.Id, true);
+                await PopulateDropDownListsAsync(programmingTask.DifficultyId);
+                ViewData["isFailedToValid"] = true;
+                return View(programmingTask);
             }
 
             _dbContext.Update(programmingTask);
@@ -111,59 +134,21 @@ namespace LinqTasks.Controllers
             return View();
         }
 
-        /* Other Methods: */
-        /* GetCreateViewAsync() */
-        public async Task<IActionResult> GetCreateViewAsync(int? difficultyId, bool isFailedToValid = false)
+        /* Private Methods: */
+        /* PopulateSelectListsToCreateViewAsync() */
+        private async Task PopulateDropDownListsAsync(int? selectedDifficultyId)
         {
-            IQueryable<Language> languages = _dbContext
-                .Languages
-                .OrderBy(language => language.Name);
+            IQueryable<Language> languages = _dbContext.Languages
+                .OrderBy(language =>
+                    language.Name);
+
             IQueryable<Difficulty> difficulties = _dbContext.Difficulties;
 
-            CreateViewModel createViewModel = new CreateViewModel
-            {
-                IsInvalid = isFailedToValid,
-                Languages = new SelectList(await languages.AsNoTracking().ToListAsync(), "Id", "Name"),
-                Difficulties = new SelectList(await difficulties.AsNoTracking().ToListAsync(), "Id", "Name", difficultyId)
-            };
+            selectedDifficultyId ??= 1;
+            Difficulty selectedDifficulty = await _dbContext.Difficulties.FirstAsync(difficulty => difficulty.Id == selectedDifficultyId.Value);
 
-            return View(createViewModel);
-        }
-
-        /* GetEditViewAsync() */
-        public async Task<IActionResult> GetEditViewAsync(int? id, bool isFailedToValid = false)
-        {
-            if (id is null)
-            {
-                return NotFound();
-            }
-
-            ProgrammingTask? programmingTask = await _dbContext
-                .ProgrammingTasks
-                .AsNoTracking()
-                .FirstOrDefaultAsync(task =>
-                    task.Id == id);
-
-            if (programmingTask is null)
-            {
-                return NotFound();
-            }
-
-            IQueryable<Language> languages = _dbContext.Languages;
-            IQueryable<Difficulty> difficulties = _dbContext.Difficulties;
-
-            var selectedLanguage = programmingTask!.LanguageId;
-            var selectedDifficulty = programmingTask!.DifficultyId;
-
-            EditViewModel editViewModel = new EditViewModel
-            {
-                IsInvalid = isFailedToValid,
-                ProgrammingTask = programmingTask,
-                Languages = new SelectList(await languages.ToListAsync(), "Id", "Name", selectedLanguage),
-                Difficulties = new SelectList(await difficulties.ToListAsync(), "Id", "Name", selectedDifficulty)
-            };
-
-            return View(editViewModel);
+            ViewData["Languages"] = new SelectList(languages.AsNoTracking(), "Id", "Name");
+            ViewData["Difficulties"] = new SelectList(difficulties.AsNoTracking(), "Id", "Name", selectedDifficulty);
         }
     }
 }

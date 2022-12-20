@@ -28,7 +28,7 @@
     <!-- Первый блок (он отображается по умолчанию, т.к. имеет классы show и active) -->
     <div class="tab-pane fade show active" id="level1">
         <br />
-        <a class="btn btn-outline-primary" asp-controller="Home" asp-action="Create" asp-route-diff=1>Добавить задачу</a>
+        <a class="btn btn-outline-primary" asp-controller="Home" asp-action="Create" asp-route-difficultyId=1>Добавить задачу</a>
         <br />
         @foreach (var item in Model
             .ProgrammingTasksLevel
@@ -68,7 +68,7 @@
     <!-- Второй блок -->
     <div class="tab-pane fade" id="level2">
         <br />
-        <a type="button" class="btn btn-outline-primary" asp-area="" asp-controller="Home" asp-action="Create" asp-route-diff=2>Добавить задачу</a>
+        <a type="button" class="btn btn-outline-primary" asp-area="" asp-controller="Home" asp-action="Create" asp-route-difficultyId=2>Добавить задачу</a>
         <br />
         @foreach (var item in Model
             .ProgrammingTasksLevel

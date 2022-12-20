@@ -1,10 +1,9 @@
-﻿@model CreateViewModel
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelper
+﻿@model ProgrammingTask
 
 <h2>Добавление задачи</h2>
 <br />
 <form asp-action="create" asp-controller="home">
-    @if (Model.IsInvalid)
+    @if (ViewBag.isFailedToValid is not null && ViewBag.isFailedToValid)
     {
         <div class="alert alert-danger" role="alert">
             Заполните необходимые поля:
@@ -12,19 +11,19 @@
         </div>
     }
     <p>
-        <input type="text" class="form-control" placeholder="Условие задачи" asp-for="ProgrammingTask.Description" />
+        <input type="text" class="form-control" placeholder="Условие задачи" asp-for="Description" />
     </p>
     <p>
-        <textarea rows="1" class="form-control" placeholder="Код решения (данное поле многострочное, также код первого уровня автоматически обертывается в метод Console.Writeline())" asp-for="ProgrammingTask.Code" id="textarea-id"></textarea>
+        <textarea rows="1" class="form-control" placeholder="Код решения (данное поле многострочное, также код первого уровня автоматически обертывается в метод Console.Writeline())" asp-for="Code" id="textarea-id"></textarea>
     </p>
     <p>
-        <input type="text" class="form-control" placeholder="Результат (только для задач уровня Level 1)" asp-for="ProgrammingTask.Result" />
+        <input type="text" class="form-control" placeholder="Результат (только для задач уровня Level 1)" asp-for="Result" />
     </p>
     <p>
-        <select class="form-control" id=diff asp-for="ProgrammingTask.DifficultyId" asp-items="Model.Difficulties"></select>
+        <select asp-for="DifficultyId" class="form-control" asp-items="ViewBag.Difficulties"></select>
+    <p> 
     <p>
-    <p>
-        <select class="form-control" asp-for="ProgrammingTask.LanguageId" asp-items="Model.Languages"></select>
+        <select class="form-control" asp-for="LanguageId" asp-items="ViewBag.Languages"></select>
     </p>
     <p>
         <input class="btn btn-outline-dark" type="submit" value="Добавить" />
