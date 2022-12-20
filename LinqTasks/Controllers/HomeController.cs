@@ -1,6 +1,5 @@
 ﻿using LinqTasks.Data;
 using LinqTasks.Models.Home;
-using LinqTasks.Models.Home.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -27,15 +26,11 @@ namespace LinqTasks.Controllers
         {
             IQueryable<ProgrammingTask> programmingTasks = _dbContext
                 .ProgrammingTasks
-                .Include(task => task.Difficulty)
+                .Include(task => 
+                    task.Difficulty)
                 .AsNoTracking();
 
-            IndexViewModel indexViewModel = new IndexViewModel
-            {
-                ProgrammingTasksLevel = await programmingTasks.ToListAsync()
-            };
-
-            return View(indexViewModel);
+            return View(await programmingTasks.ToListAsync());
         }
 
         /* GET: Create ProgrammingTask */
