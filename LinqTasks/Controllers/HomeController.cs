@@ -24,8 +24,7 @@ namespace LinqTasks.Controllers
         [HttpGet("")]
         public async Task<IActionResult> Index()
         {
-            IQueryable<ProgrammingTask> programmingTasks = _dbContext
-                .ProgrammingTasks
+            IQueryable<ProgrammingTask> programmingTasks = _dbContext.ProgrammingTasks
                 .Include(task => 
                     task.Difficulty)
                 .AsNoTracking();
@@ -45,21 +44,28 @@ namespace LinqTasks.Controllers
         [HttpPost("{action}")]
         public async Task<IActionResult> Create(ProgrammingTask programmingTask)
         {
-            // Validation
             if (programmingTask.DifficultyId == 1 && programmingTask.Result.IsNullOrEmpty())
             {
                 ModelState.AddModelError("Result", "Для задач уровня 1 необходимо добавить результат вывода");
             }
-            if (!ModelState.IsValid)
+
+            try
             {
-                await PopulateDropDownListsAsync(programmingTask.DifficultyId);
-                ViewData["isFailedToValid"] = true;
-                return View(nameof(Create));
+                if (ModelState.IsValid)
+                {
+                    _dbContext.Add(programmingTask);
+                    await _dbContext.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Не удается сохранить задачу");
             }
 
-            _dbContext.Add(programmingTask);
-            await _dbContext.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            await PopulateDropDownListsAsync(programmingTask.DifficultyId);
+            ViewData["isFailedToValid"] = true;
+            return View(nameof(Create), programmingTask);
         }
 
         /* GET: Edit ProgrammingTask */
@@ -95,11 +101,18 @@ namespace LinqTasks.Controllers
             {
                 ModelState.AddModelError("Result", "Для задач уровня 1 необходимо добавить результат вывода");
             }
-            if (!ModelState.IsValid)
+            try
             {
-                await PopulateDropDownListsAsync(programmingTask.DifficultyId);
-                ViewData["isFailedToValid"] = true;
-                return View(programmingTask);
+                if (!ModelState.IsValid)
+                {
+                    await PopulateDropDownListsAsync(programmingTask.DifficultyId);
+                    ViewData["isFailedToValid"] = true;
+                    return View(programmingTask);
+                }
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Не удается сохранить задачу");
             }
 
             _dbContext.Update(programmingTask);
@@ -116,10 +129,18 @@ namespace LinqTasks.Controllers
                 return NotFound();
             }
 
-            ProgrammingTask programmingTask = new ProgrammingTask { Id = id.Value };
-            _dbContext.Entry(programmingTask).State = EntityState.Deleted;
-            await _dbContext.SaveChangesAsync();
-            return RedirectToAction("Index");
+            try
+            {
+                ProgrammingTask programmingTask = new ProgrammingTask { Id = id.Value };
+                _dbContext.Entry(programmingTask).State = EntityState.Deleted;
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         /* Privacy Page */
