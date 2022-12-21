@@ -71,7 +71,7 @@ namespace LinqTasks.Controllers
                 return NotFound();
             }
 
-            ProgrammingTask? programmingTask = await _dbContext
+            ProgrammingTask programmingTask = await _dbContext
                 .ProgrammingTasks
                 .AsNoTracking()
                 .FirstOrDefaultAsync(task =>

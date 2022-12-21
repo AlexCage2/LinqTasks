@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
     string dbName = Environment.GetEnvironmentVariable("DB_NAME");
     string dbPassword = Environment.GetEnvironmentVariable("DB_SA_PASSWORD");
     string connection = $"Data Source={dbHost};Initial Catalog={dbName};User ID=sa;Password={dbPassword};Encrypt = false;";
-    //string connection = builder.Configuration.GetConnectionString("DefaultConnection")!;
+    //string connection = builder.Configuration.GetConnectionString("DefaultConnection");
     builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(connection));
 
     /* MVC Dependecy Injection */
